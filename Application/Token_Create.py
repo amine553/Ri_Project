@@ -47,6 +47,5 @@ class Tkn:
         
         # Remove any empty strings from the list
         tokens = [word for word in tokens if word != ""]
-        
-        print(tokens)
+
         return tokens

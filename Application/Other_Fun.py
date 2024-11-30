@@ -6,11 +6,9 @@ class Other_fun:
             self.StopList = [line.strip() for line in fo.readlines() if line.strip() != ""]
 
     def check_Stop_List(self, stopwords):
-        
-        for word in stopwords:
-            if word in self.StopList:
-                return False
-        return True
+        if stopwords in self.StopList:
+                return True
+        return False
     
     def Check_Size(self,Word):
         return len(Word)
@@ -39,31 +37,40 @@ class Other_fun:
     def inser(self, word, indexi):
         
         indexi.append(word)  
-        
-    def inserf(self,freqi):
-        
+    
+    def inserf(self, freqi):
+         
         freqi.append(1)
+    
+    def postion(self, word, indexi):
+    
+        if word in indexi:
+            return indexi.index(word)
+        return -1
+    
+    def modfief(self, Pos, freqi):
         
-    def postion(self,word,indexi,list):
-        for tk,tk2 in indexi ,list:
-            if word == tk2 :
-                return True
-        return False
+        if Pos != -1:
+            freqi[Pos] += 1
 
 test = Other_fun()
 
-list = ['amine','haciane','wlid','alger','qlf','amine']
+list = ['amine','amine2','wlid','alger', 'haciane', 'wlid', 'alger', 'qlf', 'amine']
 index = []
 freqi = []
 
-for tok in list:
-    print(test.postion(tok,index))
-    test.inser(tok,index)
-    test.inserf(freqi)
-    
-    
-print(index)
-print(freqi)
+# for tok in list:
+     
+#     if tok not in index:   
+#         test.inser(tok, index)    
+#         test.inserf(freqi)         
+#     else:   
+#         pos = test.postion(tok, index)   
+#         test.modfief(pos, freqi)
+
+ 
+# print("Index:", index)   
+# print("Frequency:", freqi)  
 
     
 
