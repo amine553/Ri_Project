@@ -3,7 +3,7 @@
     # index.append(truncated_word)  # Append the truncated word to the index list
 from Token_Create import Tkn
 from Other_Fun import  Other_fun
-Di = 'The abdominal external oblique muscle forms the superficial layer of the abdominal wall. algereies'
+Di = "The abdominal external oblique muscle forms the superficial layer of the abdominal wall. algereies Covid-19 19, farwell he's wlid alger 19 l'agregartionn covid-19"
 Tokeniser = Tkn()
 Tokens = Tokeniser.FinalTokens(Di)
 FunApp = Other_fun()
