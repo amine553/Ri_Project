@@ -55,22 +55,7 @@ class Other_fun:
 
 test = Other_fun()
 
-list = ['amine','amine2','wlid','alger', 'haciane', 'wlid', 'alger', 'qlf', 'amine']
-index = []
-freqi = []
 
-# for tok in list:
-     
-#     if tok not in index:   
-#         test.inser(tok, index)    
-#         test.inserf(freqi)         
-#     else:   
-#         pos = test.postion(tok, index)   
-#         test.modfief(pos, freqi)
-
- 
-# print("Index:", index)   
-# print("Frequency:", freqi)  
 
     
 
