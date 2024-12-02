@@ -84,7 +84,7 @@ for Di in collection:
     index.append(indexDi)
     freqi.append(freqiDi)
     
-print("The TF Dict",Dict1)
+# print("The TF Dict",Dict1)
 print("----------------------------------------------------------------------------------\n\n\n\n")
 
 # Initialize an empty dictionary to store the merged terms and frequencies
@@ -107,11 +107,18 @@ for key in IDF_D:
 
 
 print("----------------------------------------------------------------------------------\n\n\n\n")
-print("The IDF Dict :",IDF_D)
+# print("The IDF Dict :",IDF_D)
 
-Wi = FunApp.compute_tf_idf(Dict1,IDF_D)
+# Initialize an empty list to store the final Wi for all documents
+Wi = []
 
-print("New Weighted TF-IDF (Wi) Dictionary:")
+for tf_dict in Dict1:
+    # Compute Wi for each document using the TF dictionary and the global IDF dictionary
+    wi_dict = FunApp.compute_tf_idf(tf_dict, IDF_D)
+    Wi.append(wi_dict)
+
+# Now you can print the results of the weighted TF-IDF (Wi) for each document
+print("Le poids des terms dont le document")
 print(Wi)
 
 

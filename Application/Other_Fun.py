@@ -53,7 +53,17 @@ class Other_fun:
         if Pos != -1:
             freqi[Pos] += 1
 
-test = Other_fun()
+    def compute_tf_idf(self,tf_dict, idf_dict):
+        # Initialize an empty dictionary to store the new weights (Wi)
+        wi_dict = {}
+
+        # Loop through each word in the TF dictionary
+        for word, tf_value in tf_dict.items():
+            if word in idf_dict:  # Ensure the word also has a corresponding IDF value
+                idf_value = idf_dict[word]
+                wi_dict[word] = tf_value * idf_value  # Compute Wi as TF * IDF
+
+        return wi_dict
 
 
 
