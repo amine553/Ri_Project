@@ -14,7 +14,6 @@ class Other_fun:
         return len(Word)
     
     def Extraite(self, word, size):
-        # Truncate the word to the given size
         return word[:size]
     
     def voyelle(self,mot):
@@ -30,7 +29,7 @@ class Other_fun:
         
         for i in range(len(mot) - 1):
             if mot[i] in voyelles and mot[i + 1] not in voyelles:
-                count += 1  # Found a vowel-consonant sequence
+                count += 1   
 
         return count
     
@@ -54,14 +53,12 @@ class Other_fun:
             freqi[Pos] += 1
 
     def compute_tf_idf(self,tf_dict, idf_dict):
-        # Initialize an empty dictionary to store the new weights (Wi)
         wi_dict = {}
 
-        # Loop through each word in the TF dictionary
         for word, tf_value in tf_dict.items():
-            if word in idf_dict:  # Ensure the word also has a corresponding IDF value
+            if word in idf_dict:   
                 idf_value = idf_dict[word]
-                wi_dict[word] = tf_value * idf_value  # Compute Wi as TF * IDF
+                wi_dict[word] = tf_value * idf_value  
 
         return wi_dict
 

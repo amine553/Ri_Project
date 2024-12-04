@@ -3,23 +3,24 @@ from Token_Create import Tkn
 from Other_Fun import Other_fun
 import os
 from math import log
+ 
+client = pymongo.MongoClient("mongodb://localhost:27017/")   
+db = client["Ri_Project"]   
+collection_db = db["Collection"]   
 
-# MongoDB setup
-client = pymongo.MongoClient("mongodb://localhost:27017/")  # Connect to MongoDB
-db = client["Ri_Project"]  # Use the database
-collection_db = db["Collection"]  # Use the collection
-
-folder_path = r'C:\Users\hacia\Desktop\Ri_Project\Collection_TIME'
+folder_path = r'Collection_TIME'
 collection = []
-# Loop through all files in the folder
+filenames = []
+
 for filename in os.listdir(folder_path):
     file_path = os.path.join(folder_path, filename)
     
-    # Check if the file is a regular file (not a directory)
+   
     if os.path.isfile(file_path):
         with open(file_path, 'r') as file:
             # Read the content of the file and add it to the collection list
             collection.append(file.read().strip())
+            filenames.append(os.path.splitext(filename)[0]+".html")  # Store the filename
 
 Tokeniser = Tkn()
 FunApp = Other_fun()
@@ -85,7 +86,6 @@ for Di in collection:
     index.append(indexDi)
     freqi.append(freqiDi)
 
-# Compute IDF (Inverse Document Frequency)
 IDF_D = {}
 for idx_list in index:
     terms_set = set(idx_list)
@@ -97,21 +97,82 @@ for idx_list in index:
 for key in IDF_D:
     IDF_D[key] = log(len(index) / IDF_D[key], 10)
 
-# Compute TF-IDF weights (Wi)
 Wi = []
 for tf_dict in Dict1:
     wi_dict = FunApp.compute_tf_idf(tf_dict, IDF_D)
     Wi.append(wi_dict)
 
-# Now, insert data into MongoDB
 for doc_idx, doc in enumerate(collection):
-    # Create a document to insert
     document = {
+        "document_title": filenames[doc_idx],
         "original_text": doc,
         "index": index[doc_idx],
         "weights": Wi[doc_idx]
     }
-    # Insert into MongoDB collection
     collection_db.insert_one(document)
 
 print("Data has been successfully stored in MongoDB!")
+
+#! ((((((((((((((((((((((((((((((((((((((((((((((((((((((((create HTML FILES))))))))))))))))))))))))))))))))))))))))))))))))))))))))
+
+input_directory = "Collection_Time"
+output_directory = "Application/static/Generated_HTML"
+
+os.makedirs(output_directory, exist_ok=True)
+
+for filename in os.listdir(input_directory):
+    if filename.endswith(".txt"):
+        input_file_path = os.path.join(input_directory, filename)
+        with open(input_file_path, "r", encoding="utf-8") as file:
+            content = file.read()
+        
+        file_title = os.path.splitext(filename)[0]   
+        html_content = f"""
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{file_title}</title>
+    <style>
+        body {{
+            font-family: 'Roboto', sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+            background-color: #f8f9fa;
+        }}
+        h1 {{
+            color: #007bff;
+            font-size: 2.5rem;
+        }}
+        p {{
+            white-space: pre-wrap; /* Preserve line breaks in text */
+            font-size: 1.1rem;
+            color: #333;
+        }}
+        .container {{
+            max-width: 800px;
+            margin: 40px auto;
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <center><h1>{file_title}</h1></center>
+        <p>{content}</p>
+    </div>
+</body>
+</html>
+"""
+
+        
+        # Write the HTML content to a new file
+        output_file_path = os.path.join(output_directory, f"{file_title}.html")
+        with open(output_file_path, "w", encoding="utf-8") as output_file:
+            output_file.write(html_content)
+
+print("HTML files have been generated successfully.")

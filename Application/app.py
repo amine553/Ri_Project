@@ -14,14 +14,13 @@ app = Flask(__name__)
 @app.route("/", methods=["GET", "POST"])
 def index():
     ranked_docs = []
+    search_terms = None
     if request.method == "POST":
-        # Get the input from the form (a single string)
-        user_input = request.form['search_terms']
-        
-        # Call the retrieve_and_rank_docs function with the string directly
-        ranked_docs = retrieve_and_rank_docs(user_input)
+        search_terms = request.form.get('search_terms', None)
+        if search_terms:
+            ranked_docs = retrieve_and_rank_docs(search_terms)
+    return render_template("index.html", ranked_docs=ranked_docs, search_terms=search_terms)
 
-    return render_template("index.html", ranked_docs=ranked_docs)
 
 if __name__ == "__main__":
     app.run(debug=True)

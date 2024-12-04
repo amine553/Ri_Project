@@ -2,32 +2,23 @@ import pymongo
 from Token_Create import Tkn
 from Other_Fun import Other_fun
 
-# MongoDB setup
 
 def retrieve_and_rank_docs(term_list):
-    client = pymongo.MongoClient("mongodb://localhost:27017/")  # Connect to MongoDB
-    db = client["Ri_Project"]  # Use the database
-    collection_db = db["Collection"]  # Use the collection
-    """
-    Retrieve documents based on a list of terms, calculate a score for each, and rank them.
-    
-    :param term_list: List of terms to base the retrieval on.
-    :return: Sorted list of documents and their scores.
-    """
-    # Tokenizer and other helper methods
+    client = pymongo.MongoClient("mongodb://localhost:27017/") 
+    db = client["Ri_Project"] 
+    collection_db = db["Collection"] 
+
     Tokeniser = Tkn()
     FunApp = Other_fun()
     term_list = Tokeniser.FinalTokens(term_list)
-    index = []   # To store unique terms
-    freqi = []   # To store frequencies of terms in the query
+    index = []   
+    freqi = []  
 
-    # Tokenize and process the user query
     for Tokj in term_list:
         if not FunApp.check_Stop_List(Tokj):
             Mot = Tokj
             L = FunApp.Check_Size(Tokj)
             
-            # Apply stemming and transformations based on rules
             if L > 3:
                 if Mot[L-1] == 's' and Mot[L-2] == 'e' and Mot[L-3] == 'i':
                     Mot = FunApp.Extraite(Mot, L-2)
@@ -78,63 +69,45 @@ def retrieve_and_rank_docs(term_list):
                 pos = FunApp.postion(Mot, index)
                 FunApp.modfief(pos, freqi)
     
-    # Now, retrieve documents from MongoDB and calculate scores
-    results = []  # Store documents and their scores
+    results = []   
     
-    # Query all documents from the collection
     documents = collection_db.find()
     
-    # Iterate through documents
     for doc in documents:
         doc_index = doc["index"]
         weights = doc["weights"]
-        score = 0  # Initialize the document's score
-        
-        # Ensure that weights are accessible correctly
-        if isinstance(weights, list):
-            if len(doc_index) != len(weights):
-                print(f"Skipping document with ID {doc['_id']} due to mismatched lengths.")
-                continue
-        elif isinstance(weights, dict):
-            print(f"Document with ID {doc['_id']} has weights as a dictionary.")
-        else:
-            print(f"Skipping document with ID {doc['_id']} due to unknown weights structure.")
-            continue
-        
-        # Calculate the score for the current document based on the query terms
+        score = 0  
         for term in index:
             if term in doc_index:
-                term_index = doc_index.index(term)  # Get the term's index position
+                term_index = doc_index.index(term)   
                 
                 try:
-                    # Access weights based on its structure
                     if isinstance(weights, list):
-                        tf_idf_weight = weights[term_index]  # List-based access
+                        tf_idf_weight = weights[term_index]  
                     elif isinstance(weights, dict):
-                        tf_idf_weight = weights.get(term, 0)  # Dictionary-based access
+                        tf_idf_weight = weights.get(term, 0)   
                     else:
-                        continue  # Skip if weights structure is not supported
+                        continue   
                     
-                    term_tf = freqi[index.index(term)]  # Get term frequency from the query
-                    score += tf_idf_weight * term_tf  # Add to the document's score
+                    term_tf = freqi[index.index(term)]  
+                    score += tf_idf_weight * term_tf   
                 
                 except (IndexError, KeyError):
                     print(f"Skipping term '{term}' in document {doc['_id']} due to access error.")
                     continue
         
-        # If the score is greater than 0, include the document in the results
         if score > 0:
             results.append({
                 "document_text": doc["original_text"],
-                "score": score
+                "score": score,
+                "document_title" : doc["document_title"]
             })
     
-    # Sort the results by score in descending order
     results.sort(key=lambda x: x["score"], reverse=True)
     
     return results
 
-# # Example Usage
+# # Example
 # term_list = ["covid-19", "covid-19","print"]
 # ranked_docs = retrieve_and_rank_docs(term_list)
 
