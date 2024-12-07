@@ -96,7 +96,7 @@
 
         <div class="d-flex justify-content-between align-items-center px-3">
             <h5 class="card-title mb-0">
-                <a href="{{ url_for('static', filename='Generated_HTML/' ~ doc['document_title'].rsplit('.', 1)[0]) }}" class="result-title text-decoration-none text-primary">
+                <a href="{{ url_for('static', filename='Generated_HTML/' ~ doc['document_title'])}}" class="result-title text-decoration-none text-primary">
                     Document {{ doc['document_title'].rsplit('.', 1)[0] }}
                     <!-- our effacer  la sufix .HTML  -->
                 </a>
